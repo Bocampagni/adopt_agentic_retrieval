@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     OPENROUTER_API_KEY: str = Field(description="OpenRouter API key")
     OPENROUTER_BASE_URL: str = Field(default="https://openrouter.ai/api/v1", description="OpenRouter base URL")
     MODEL_TEMPERATURE: float = Field(default=0.7, description="Temperature for the model")
+    ALLOWED_ORIGINS: str = Field(
+        default="http://localhost:5173,http://127.0.0.1:5173",
+        description="Comma-separated list of allowed CORS origins",
+    )
 
     model_config = {
         "env_file": ".env",
