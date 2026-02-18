@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { DEFAULT_MODEL_ID } from "@/config/models";
 
+export type SidebarView = "chat" | "database";
+
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -16,6 +18,8 @@ export interface Conversation {
 }
 
 interface ChatState {
+  sidebarView: SidebarView;
+  setSidebarView: (view: SidebarView) => void;
   conversations: Conversation[];
   activeConversationId: string | null;
   selectedModelId: string;
@@ -41,13 +45,16 @@ function firstLine(text: string, maxLen = 40): string {
 export const useChatStore = create<ChatState>()(
   persist(
     (set, get) => ({
+      sidebarView: "chat" as SidebarView,
+      setSidebarView: (view) => set({ sidebarView: view }),
+
       conversations: [],
       activeConversationId: null,
       selectedModelId: DEFAULT_MODEL_ID,
 
       setSelectedModelId: (id) => set({ selectedModelId: id }),
 
-      setActiveConversation: (id) => set({ activeConversationId: id }),
+      setActiveConversation: (id) => set({ activeConversationId: id, sidebarView: "chat" as SidebarView }),
 
       createConversation: () => {
         const id = generateId();

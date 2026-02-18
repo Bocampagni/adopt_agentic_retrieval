@@ -3,7 +3,8 @@ from fastapi import APIRouter, HTTPException
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.messages.base import BaseMessage
 
-from api.schemas import ChatMessage, ChatRequest, ChatResponse, TableData
+from api.schemas import ChatMessage, ChatRequest, ChatResponse, SchemaResponse, TableData
+from data.claims_db import CLAIMS_TABLE_NAME, execute_query
 from graph import create_query_graph
 
 
@@ -21,6 +22,18 @@ def _to_langchain(m: ChatMessage) -> BaseMessage:
 @router.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@router.get("/api/schema", response_model=SchemaResponse)
+def schema_preview():
+    result = execute_query(f"SELECT * FROM {CLAIMS_TABLE_NAME} LIMIT 15")
+    if result.error:
+        raise HTTPException(status_code=500, detail=result.error)
+    return SchemaResponse(
+        table_name=CLAIMS_TABLE_NAME,
+        columns=result.columns,
+        sample_rows=result.rows,
+    )
 
 
 @router.post("/api/chat", response_model=ChatResponse)

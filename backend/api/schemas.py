@@ -21,3 +21,9 @@ class TableData(BaseModel):
 class ChatResponse(BaseModel):
     message: ChatMessage
     table: TableData | None = None
+
+
+class SchemaResponse(BaseModel):
+    table_name: str
+    columns: list[str]
+    sample_rows: list[list[Any]]
