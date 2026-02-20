@@ -40,7 +40,7 @@ def answer_node(state: QueryState, llm) -> dict:
     result = state.get("last_result") or {}
     user_message = _last_user_message(messages)
     result_text = _format_result_for_prompt(result)
-    prompt = f"User question: {user_message}\n\nQuery result:\n{result_text}"
+    prompt = f"User question: {user_message}\n\nQuery result:\n{result_text}" # TODO: Improve the quality of the prompt. I can pass more information. Like columns and rows.
     response = llm.invoke(
         [
             SystemMessage(content=ANSWER_SYSTEM),
